@@ -1,7 +1,7 @@
 resource "gitlab_user_sshkey" "this" {
   for_each = var.user_sshkeys != null ? var.user_sshkeys : {}
 
-  user_id    = data.gitlab_current_user.this.id
+  # user_id    = data.gitlab_users.current_user.id
   title      = each.key
   key        = each.value.key
   expires_at = each.value.expires_at
@@ -10,14 +10,14 @@ resource "gitlab_user_sshkey" "this" {
 resource "gitlab_user_gpgkey" "this" {
   for_each = var.user_gpgkeys != null ? var.user_gpgkeys : {}
 
-  user_id = data.gitlab_current_user.this.id
-  key     = each.value.key
+  # user_id = data.gitlab_users.current_user.id
+  key = each.value
 }
 
 resource "gitlab_personal_access_token" "this" {
   for_each = var.user_access_tokens != null ? var.user_access_tokens : {}
 
-  user_id    = data.gitlab_current_user.this.id
+  user_id    = data.gitlab_users.current_user.id
   name       = each.key
   expires_at = each.value.expires_at
   scopes     = each.value.scopes

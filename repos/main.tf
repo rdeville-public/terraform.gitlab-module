@@ -113,15 +113,63 @@ resource "gitlab_project" "this" {
   }
 }
 
+resource "gitlab_branch_protection" "this" {
+  for_each = var.repo_branch_protection
+
+  project                = gitlab_project.this.id
+  branch                 = each.key
+  push_access_level      = each.value.push_access_level
+  merge_access_level     = each.value.merge_access_level
+  unprotect_access_level = each.value.unprotect_access_level
+
+  dynamic "allowed_to_push" {
+    for_each = each.value.allowed_to_push_group
+    content {
+      group_id = each.value
+    }
+  }
+  dynamic "allowed_to_push" {
+    for_each = each.value.allowed_to_push_user
+    content {
+      user_id = each.value
+    }
+  }
+
+  dynamic "allowed_to_merge" {
+    for_each = each.value.allowed_to_merge_group
+    content {
+      group_id = each.value
+    }
+  }
+  dynamic "allowed_to_merge" {
+    for_each = each.value.allowed_to_merge_user
+    content {
+      user_id = each.value
+    }
+  }
+
+  dynamic "allowed_to_unprotect" {
+    for_each = each.value.allowed_to_unprotect_group
+    content {
+      group_id = each.value
+    }
+  }
+  dynamic "allowed_to_unprotect" {
+    for_each = each.value.allowed_to_unprotect_user
+    content {
+      user_id = each.value
+    }
+  }
+}
+
 resource "gitlab_tag_protection" "this" {
   for_each = var.repo_tag_protections
 
-
   project             = gitlab_project.this.id
   create_access_level = each.value.create_access_level
-  tag                 = each.value.tag
+  tag                 = each.key
   dynamic "allowed_to_create" {
-    for_each = each.value.allowed_to_create
+    for_each = each.value.allowed_to_create != null ? each.value.allowed_to_create : []
 
     content {
       user_id  = each.value.user_id

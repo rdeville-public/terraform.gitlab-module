@@ -12,7 +12,7 @@ variable "group" {
     lfs_enabled                       = optional(bool, false)
     membership_lock                   = optional(bool, true)
     mentions_disabled                 = optional(bool, true)
-    prevent_forking_outside_group     = optional(bool, true)
+    prevent_forking_outside_group     = optional(bool)
     project_creation_level            = optional(string, "maintainer")
     request_access_enabled            = optional(bool, false)
     require_two_factor_authentication = optional(bool, true)
@@ -20,8 +20,8 @@ variable "group" {
     shared_runners_setting            = optional(string, "disabled_and_unoverridable")
     subgroup_creation_level           = optional(string, "maintainer")
     two_factor_grace_period           = optional(number, 72)
-    visibility_level                  = optional(string, "public")
-    wiki_access_level                 = optional(string, "disabled")
+    visibility_level                  = optional(string, "private")
+    wiki_access_level                 = optional(string)
 
     push_rules = optional(object({
       branch_name_regex       = optional(string)
@@ -31,7 +31,7 @@ variable "group" {
       member_check            = optional(bool)
       prevent_secrets         = optional(bool)
       reject_unsigned_commits = optional(bool)
-    }), null)
+    }), {})
   })
 }
 
